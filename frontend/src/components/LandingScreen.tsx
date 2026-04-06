@@ -126,22 +126,12 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
                 </div>
 
                 {/* Info bar */}
-                <div className="px-4 py-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-white text-sm font-semibold" style={{ fontFamily: "var(--font-display)" }}>
-                        {c.name}
-                      </div>
-                      <div className="text-[10px] mt-0.5" style={{ color: c.color + "80" }}>
-                        {c.role}
-                      </div>
-                    </div>
-                    {active && (
-                      <div
-                        className="w-2.5 h-2.5 rounded-full"
-                        style={{ background: c.color, boxShadow: `0 0 8px ${c.color}` }}
-                      />
-                    )}
+                <div className="px-4 py-3 bg-white">
+                  <div className="text-black text-sm font-semibold" style={{ fontFamily: "var(--font-display)" }}>
+                    {c.name}
+                  </div>
+                  <div className="text-black/50 text-[10px] mt-0.5">
+                    {c.role}
                   </div>
                 </div>
               </button>
