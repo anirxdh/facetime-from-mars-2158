@@ -20,7 +20,7 @@ const characters = [
     avatar: "R",
     gradient: "from-red-400 to-rose-600",
     name: "Chef Riku",
-    subtitle: "Food Designer \u2022 Age 34 \u2022 Earth immigrant",
+    subtitle: "Food Designer \u2022 Age 34 \u2022 2nd gen Mars-born",
     quote: "Tell me what you ate today!",
   },
   {
