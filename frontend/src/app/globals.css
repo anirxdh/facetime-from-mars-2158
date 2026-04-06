@@ -134,3 +134,72 @@ body {
   background: rgba(245, 158, 11, 0.3);
   border-radius: 2px;
 }
+
+/* Signal glitch overlay */
+.signal-glitch-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  animation: glitch-shake 0.2s linear;
+}
+
+.signal-glitch-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(255, 255, 255, 0.04) 1px,
+    rgba(255, 255, 255, 0.04) 2px
+  );
+  opacity: 1;
+}
+
+.signal-glitch-color-shift {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.06) 0%,
+    rgba(0, 255, 255, 0.04) 33%,
+    transparent 66%,
+    rgba(255, 0, 128, 0.05) 100%
+  );
+  mix-blend-mode: screen;
+  animation: glitch-color 0.2s steps(3) forwards;
+}
+
+@keyframes glitch-shake {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-1px, -2px); }
+  80% { transform: translate(1px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes glitch-color {
+  0% { opacity: 0.8; transform: translateX(-3px); }
+  33% { opacity: 0.5; transform: translateX(3px); }
+  66% { opacity: 0.9; transform: translateX(-1px); }
+  100% { opacity: 0; transform: translateX(0); }
+}
+
+/* Topic chip animations */
+@keyframes chip-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.topic-chip {
+  animation: chip-fade-in 0.4s ease-out forwards;
+  opacity: 0;
+}

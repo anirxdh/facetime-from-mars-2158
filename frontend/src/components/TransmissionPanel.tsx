@@ -10,6 +10,11 @@ import {
 } from "react";
 import { WaveformVisualizer } from "./WaveformVisualizer";
 import { TransmitButton } from "./TransmitButton";
+import { SignalGlitch } from "./SignalGlitch";
+import { TopicChips } from "./TopicChips";
+import { MarsClock } from "./MarsClock";
+import { AmbientSound } from "./AmbientSound";
+import { EndCallSummary } from "./EndCallSummary";
 
 interface Message {
   role: "user" | "zeph";
@@ -92,6 +97,8 @@ export function TransmissionPanel({
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTranscript, setCurrentTranscript] = useState("");
   const [signalStatus, setSignalStatus] = useState("CONNECTED");
+  const [showEndScreen, setShowEndScreen] = useState(false);
+  const startTimeRef = useRef(new Date());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -185,13 +192,8 @@ export function TransmissionPanel({
     onFocusChange?.("earth");
   }, [isProcessing, isPlaying, onFocusChange]);
 
-  const stopListening = useCallback(async () => {
-    if (recognitionRef.current) recognitionRef.current.stop();
-    setIsListening(false);
-    const text = currentTranscript.trim();
-    if (!text) { setSignalStatus("CONNECTED"); onFocusChange?.("idle"); return; }
+  const sendMessage = useCallback(async (text: string) => {
     setMessages((prev) => [...prev, { role: "user", text }]);
-    setCurrentTranscript("");
     setIsProcessing(true);
     setSignalStatus("SIGNAL IN TRANSIT");
     onFocusChange?.("idle");
@@ -222,10 +224,33 @@ export function TransmissionPanel({
     }
     setIsProcessing(false);
     setSignalStatus("CONNECTED");
-  }, [currentTranscript, sessionId, setSessionId, playAudioWithEffects, onFocusChange]);
+  }, [sessionId, setSessionId, playAudioWithEffects, onFocusChange]);
+
+  const stopListening = useCallback(async () => {
+    if (recognitionRef.current) recognitionRef.current.stop();
+    setIsListening(false);
+    const text = currentTranscript.trim();
+    if (!text) { setSignalStatus("CONNECTED"); onFocusChange?.("idle"); return; }
+    setCurrentTranscript("");
+    await sendMessage(text);
+  }, [currentTranscript, sendMessage, onFocusChange]);
+
+  const showTopics = !isListening && !isProcessing && !isPlaying;
+
+  if (showEndScreen) {
+    return (
+      <EndCallSummary
+        messages={messages}
+        startTime={startTimeRef.current}
+        onClose={() => window.location.reload()}
+      />
+    );
+  }
 
   return (
     <div className="h-full flex flex-col justify-end p-4 md:p-6">
+      <SignalGlitch active={!isProcessing} />
+
       {/* Top bar — Mars HUD style */}
       <div className="absolute top-0 left-0 right-0 px-4 py-3 flex items-center justify-between"
         style={{ background: "linear-gradient(180deg, rgba(6,6,10,0.9) 0%, transparent 100%)" }}>
@@ -233,20 +258,24 @@ export function TransmissionPanel({
           <div className={`w-2 h-2 rounded-full ${
             isProcessing ? "bg-orange-400 animate-pulse"
               : isPlaying ? "bg-red-400 animate-pulse"
-              : "bg-green-400"
+              : "bg-orange-400"
           }`} />
           <span className="text-orange-300/70 text-[10px] tracking-[0.3em] uppercase font-mono">
             {signalStatus}
           </span>
+          <AmbientSound />
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-orange-400/40 text-[9px] font-mono tracking-wider">
-            225M KM
-          </span>
+          <MarsClock />
           <span className="text-zinc-600 text-[9px]">|</span>
-          <span className="text-orange-300/50 text-[10px] font-mono tracking-wider">
-            MARS COLONY ONE
-          </span>
+          {/* End call button */}
+          <button
+            type="button"
+            onClick={() => setShowEndScreen(true)}
+            className="text-red-400/60 hover:text-red-400 text-[9px] font-mono tracking-wider uppercase transition-colors cursor-pointer"
+          >
+            END CALL
+          </button>
         </div>
       </div>
 
@@ -305,6 +334,13 @@ export function TransmissionPanel({
 
         <div ref={messagesEndRef} />
       </div>
+
+      {/* Suggested topic chips */}
+      {showTopics && (
+        <div className="w-full max-w-lg mx-auto mb-3">
+          <TopicChips onSelect={sendMessage} />
+        </div>
+      )}
 
       {/* Controls area */}
       <div className="w-full max-w-lg mx-auto">
