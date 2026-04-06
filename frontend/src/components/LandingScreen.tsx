@@ -42,7 +42,7 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
             Origin: Mars Colony One, Dome 7
           </div>
           <div className="text-zinc-500 text-[10px] mt-1 font-mono">
-            Sol 6,847 &bull; 14.6°S, 175.5°E &bull; Year 2058
+            Sol 6,847 &bull; 14.6°S, 175.5°E &bull; Year 2158
           </div>
         </div>
 

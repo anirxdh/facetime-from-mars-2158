@@ -9,7 +9,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Signal From Mars",
-  description: "A real-time transmission from Mars Colony One, 2058",
+  description: "A real-time transmission from Mars Colony One, 2158",
 };
 
 export default function RootLayout({
