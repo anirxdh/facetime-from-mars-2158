@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface LandingScreenProps {
   onAccept: () => void;
@@ -9,19 +9,24 @@ interface LandingScreenProps {
 export function LandingScreen({ onAccept }: LandingScreenProps) {
   const [showButton, setShowButton] = useState(false);
   const [signalStrength, setSignalStrength] = useState(0);
+  const strengthRef = useRef(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setSignalStrength((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setShowButton(true);
-          return 100;
-        }
-        return prev + Math.random() * 12 + 5;
-      });
+    intervalRef.current = setInterval(() => {
+      strengthRef.current += Math.random() * 12 + 5;
+      if (strengthRef.current >= 100) {
+        strengthRef.current = 100;
+        setSignalStrength(100);
+        setShowButton(true);
+        if (intervalRef.current) clearInterval(intervalRef.current);
+      } else {
+        setSignalStrength(Math.round(strengthRef.current));
+      }
     }, 120);
-    return () => clearInterval(interval);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, []);
 
   return (
