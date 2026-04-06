@@ -7,20 +7,29 @@ import { TransmissionPanel } from "@/components/TransmissionPanel";
 
 const MarsScene = dynamic(() => import("@/components/MarsScene"), {
   ssr: false,
-  loading: () => null, // Don't block UI while 3D loads
+  loading: () => null,
 });
 
 type AppState = "landing" | "connecting" | "connected";
 
+function hasWebGL(): boolean {
+  try {
+    const canvas = document.createElement("canvas");
+    return !!(
+      canvas.getContext("webgl") || canvas.getContext("webgl2") || canvas.getContext("experimental-webgl")
+    );
+  } catch {
+    return false;
+  }
+}
+
 export default function Home() {
   const [appState, setAppState] = useState<AppState>("landing");
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [show3D, setShow3D] = useState(false);
+  const [canRender3D, setCanRender3D] = useState(false);
 
-  // Delay 3D scene to let UI render first
   useEffect(() => {
-    const timer = setTimeout(() => setShow3D(true), 500);
-    return () => clearTimeout(timer);
+    setCanRender3D(hasWebGL());
   }, []);
 
   const handleAcceptTransmission = useCallback(() => {
@@ -32,30 +41,32 @@ export default function Home() {
 
   return (
     <main className="relative h-screen w-screen overflow-hidden bg-[#06060a]">
-      {/* 3D background - loads independently, never blocks UI */}
-      {show3D && (
+      {/* 3D background - only if WebGL available */}
+      {canRender3D && (
         <div className="fixed inset-0 z-0">
           <MarsScene appState={appState} />
         </div>
       )}
 
-      {/* Stars fallback if 3D hasn't loaded */}
+      {/* CSS stars fallback - always visible */}
       <div className="fixed inset-0 z-0 overflow-hidden">
-        {Array.from({ length: 80 }).map((_, i) => (
+        {Array.from({ length: 100 }).map((_, i) => (
           <div
             key={i}
-            className="absolute w-px h-px bg-white rounded-full"
+            className="absolute rounded-full bg-white"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              opacity: Math.random() * 0.6 + 0.2,
-              animation: `blink ${2 + Math.random() * 4}s ease-in-out ${Math.random() * 3}s infinite`,
+              width: `${Math.random() > 0.9 ? 2 : 1}px`,
+              height: `${Math.random() > 0.9 ? 2 : 1}px`,
+              top: `${(i * 7.3 + i * i * 0.13) % 100}%`,
+              left: `${(i * 11.7 + i * i * 0.17) % 100}%`,
+              opacity: (i % 5 + 2) / 10,
+              animation: `blink ${3 + (i % 4)}s ease-in-out ${(i % 7) * 0.5}s infinite`,
             }}
           />
         ))}
       </div>
 
-      {/* UI layer - always visible */}
+      {/* UI layer */}
       <div className="relative z-10 h-full w-full">
         {appState === "landing" && (
           <LandingScreen onAccept={handleAcceptTransmission} />
