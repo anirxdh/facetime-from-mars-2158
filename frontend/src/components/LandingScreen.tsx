@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { ZephAvatar, RikuAvatar, NovaAvatar } from "./CharacterAvatars";
 
 interface LandingScreenProps {
   onAccept: (character: string) => void;
@@ -10,33 +9,24 @@ interface LandingScreenProps {
 const characters = [
   {
     id: "zeph",
-    avatar: "Z",
+    image: "/Zeph.png",
     color: "#e8a034",
     name: "Zeph",
-    role: "Colony Kid",
-    age: 16,
-    detail: "Never visited Earth",
-    quote: "Yo, is anyone picking up?",
+    role: "Colony Kid, 16",
   },
   {
     id: "chef_riku",
-    avatar: "R",
+    image: "/foodengineer.jpg",
     color: "#e85d4a",
     name: "Chef Riku",
-    role: "Food Designer",
-    age: 34,
-    detail: "2nd gen Mars-born",
-    quote: "Tell me what you ate today!",
+    role: "Food Designer, 34",
   },
   {
     id: "dr_nova",
-    avatar: "N",
+    image: "/Drnova.png",
     color: "#9b7ae8",
     name: "Dr. Nova",
-    role: "Terraforming Chief",
-    age: 41,
-    detail: "Mars-born pioneer",
-    quote: "5 min before the dust storm.",
+    role: "Terraforming Chief, 41",
   },
 ] as const;
 
@@ -61,11 +51,11 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
         }
       `}</style>
 
-      {/* Top decorative line */}
+      {/* Top line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--mars)]/20 to-transparent" />
 
-      {/* Header cluster */}
-      <div className="text-center mb-8">
+      {/* Header */}
+      <div className="text-center mb-6">
         <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full border border-[var(--amber)]/10 bg-[var(--amber)]/5">
           <div className="w-1.5 h-1.5 rounded-full bg-[var(--amber)]" style={{ animation: "glow-pulse 2s ease-in-out infinite" }} />
           <span className="text-[var(--amber)]/60 text-[10px] tracking-[0.5em] uppercase" style={{ fontFamily: "var(--font-display)" }}>
@@ -74,29 +64,23 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
         </div>
 
         <h1
-          className="text-5xl md:text-7xl font-black uppercase tracking-wider leading-[0.9] mb-4"
+          className="text-4xl md:text-6xl font-bold uppercase tracking-wider leading-[0.9] mb-3"
           style={{
             fontFamily: "var(--font-display)",
             color: "var(--amber)",
             textShadow: "0 0 60px rgba(232,160,52,0.25), 0 0 120px rgba(193,68,14,0.15)",
           }}
         >
-          Signal<br />From Mars
+          Signal From Mars
         </h1>
 
         <p className="text-[var(--text-dim)] text-xs tracking-[0.3em] uppercase">
-          Mars Colony One &middot; Dome 7 &middot; Year 2158
+          Mars Colony One &middot; Year 2158
         </p>
       </div>
 
-      {/* Signal acquisition bar */}
-      <div className="w-full max-w-md mb-10">
-        <div className="flex items-center justify-between mb-1.5 px-1">
-          <span className="text-[var(--amber)]/50 text-[9px] tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-display)" }}>
-            Signal Lock
-          </span>
-          <span className="text-[var(--amber)]/30 text-[9px] font-mono">225M KM</span>
-        </div>
+      {/* Signal bar */}
+      <div className="w-full max-w-sm mb-8">
         <div className="h-[3px] bg-white/5 rounded-full overflow-hidden">
           <div
             className="h-full rounded-full"
@@ -109,16 +93,12 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
         </div>
       </div>
 
-      {/* Character selector — the star of the show */}
+      {/* Character cards */}
       <div
         className="w-full max-w-2xl mb-8"
-        style={{ animation: "reveal-up 3.2s ease-out forwards", opacity: 0 }}
+        style={{ animation: "reveal-up 3s ease-out forwards", opacity: 0 }}
       >
-        <p className="text-center text-[var(--text-dim)] text-[9px] tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "var(--font-display)" }}>
-          Choose your contact
-        </p>
-
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-4">
           {characters.map((c) => {
             const active = selected === c.id;
             return (
@@ -126,40 +106,43 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
                 key={c.id}
                 type="button"
                 onClick={() => setSelected(c.id)}
-                className="relative text-left rounded-xl p-4 transition-all duration-300 cursor-pointer group"
+                className="text-left rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer"
                 style={{
-                  background: active
-                    ? `linear-gradient(135deg, #0f0d0b, #12100d)`
-                    : "#0a0908",
-                  border: `1px solid ${active ? c.color + "40" : "rgba(255,255,255,0.06)"}`,
-                  boxShadow: active ? `0 0 20px ${c.color}12` : "none",
+                  background: "#0c0a08",
+                  border: `2px solid ${active ? c.color + "60" : "rgba(255,255,255,0.06)"}`,
+                  boxShadow: active ? `0 4px 30px ${c.color}20, 0 0 0 1px ${c.color}15` : "none",
                   opacity: active ? 1 : 0.5,
-                  transform: active ? "scale(1)" : "scale(0.97)",
+                  transform: active ? "scale(1)" : "scale(0.96)",
                 }}
               >
-                {/* Portrait image */}
-                <div className="w-full aspect-square rounded-lg overflow-hidden mb-3">
-                  {c.id === "zeph" && <ZephAvatar />}
-                  {c.id === "chef_riku" && <RikuAvatar />}
-                  {c.id === "dr_nova" && <NovaAvatar />}
+                {/* Image */}
+                <div className="w-full aspect-square overflow-hidden bg-[#080604]">
+                  <img
+                    src={c.image}
+                    alt={c.name}
+                    className="w-full h-full object-cover transition-transform duration-500"
+                    style={{ transform: active ? "scale(1.05)" : "scale(1)" }}
+                  />
                 </div>
 
-                {/* Info */}
-                <div className="text-white text-sm font-bold mb-0.5" style={{ fontFamily: "var(--font-display)" }}>
-                  {c.name}
-                </div>
-                <div className="text-[10px] mb-1" style={{ color: c.color + "90" }}>
-                  {c.role} &middot; {c.age}
-                </div>
-                <div className="text-[var(--text-dim)] text-[9px] leading-relaxed mb-2">
-                  {c.detail}
-                </div>
-
-                {/* Quote */}
-                <div className="pt-2 border-t" style={{ borderColor: active ? c.color + "20" : "rgba(255,255,255,0.04)" }}>
-                  <p className="text-[10px] italic" style={{ color: active ? c.color + "90" : "var(--text-dim)" }}>
-                    &ldquo;{c.quote}&rdquo;
-                  </p>
+                {/* Info bar */}
+                <div className="px-4 py-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-white text-sm font-semibold" style={{ fontFamily: "var(--font-display)" }}>
+                        {c.name}
+                      </div>
+                      <div className="text-[10px] mt-0.5" style={{ color: c.color + "80" }}>
+                        {c.role}
+                      </div>
+                    </div>
+                    {active && (
+                      <div
+                        className="w-2.5 h-2.5 rounded-full"
+                        style={{ background: c.color, boxShadow: `0 0 8px ${c.color}` }}
+                      />
+                    )}
+                  </div>
                 </div>
               </button>
             );
@@ -168,38 +151,34 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
       </div>
 
       {/* Call button */}
-      <div
-        style={{ animation: "reveal-up 3.6s ease-out forwards", opacity: 0 }}
-        className="text-center"
-      >
+      <div style={{ animation: "reveal-up 3.4s ease-out forwards", opacity: 0 }}>
         <button
           type="button"
           onClick={() => onAccept(selected)}
-          className="group relative inline-flex items-center gap-3 px-10 py-4 rounded-full cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+          className="inline-flex items-center gap-3 px-10 py-4 rounded-full cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
           style={{
             background: `linear-gradient(135deg, ${char.color}15, ${char.color}08)`,
             border: `2px solid ${char.color}50`,
             boxShadow: `0 0 30px ${char.color}15`,
           }}
         >
-          {/* Phone icon */}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style={{ color: char.color }}>
             <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.2 2.2z" />
           </svg>
           <span
             className="text-sm tracking-[0.2em] uppercase font-bold"
-            style={{ color: char.color, fontFamily: "var(--font-display)", textShadow: `0 0 20px ${char.color}40` }}
+            style={{ color: char.color, fontFamily: "var(--font-display)" }}
           >
             Call {char.name}
           </span>
         </button>
 
-        <p className="mt-4 text-[var(--text-dim)] text-[9px] tracking-[0.2em] uppercase">
-          Microphone required &middot; Encrypted channel
+        <p className="mt-4 text-center text-[var(--text-dim)] text-[9px] tracking-[0.2em] uppercase">
+          Microphone required
         </p>
       </div>
 
-      {/* Bottom decorative line */}
+      {/* Bottom line */}
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--mars)]/10 to-transparent" />
     </div>
   );
