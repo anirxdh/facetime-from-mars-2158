@@ -126,11 +126,11 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
                 </div>
 
                 {/* Info bar */}
-                <div className="px-4 py-3 bg-white">
-                  <div className="text-black text-sm font-semibold" style={{ fontFamily: "var(--font-display)" }}>
+                <div className="px-4 py-3" style={{ background: "#141210" }}>
+                  <div className="text-white/90 text-sm font-semibold" style={{ fontFamily: "var(--font-display)" }}>
                     {c.name}
                   </div>
-                  <div className="text-black/50 text-[10px] mt-0.5">
+                  <div className="text-white/30 text-[10px] mt-0.5">
                     {c.role}
                   </div>
                 </div>
