@@ -71,7 +71,7 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
             textShadow: "0 0 60px rgba(232,160,52,0.25), 0 0 120px rgba(193,68,14,0.15)",
           }}
         >
-          Signal From Mars
+          FaceTime From Mars
         </h1>
 
         <p className="text-[var(--text-dim)] text-xs tracking-[0.3em] uppercase">
