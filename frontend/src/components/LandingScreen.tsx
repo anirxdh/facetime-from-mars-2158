@@ -1,10 +1,44 @@
 "use client";
 
+import { useState } from "react";
+
 interface LandingScreenProps {
-  onAccept: () => void;
+  onAccept: (character: string) => void;
 }
 
+const characters = [
+  {
+    id: "zeph",
+    avatar: "Z",
+    gradient: "from-amber-400 to-orange-600",
+    name: "Zeph",
+    subtitle: "Mars-born \u2022 Age 16 \u2022 Never visited Earth",
+    quote: "Yo, is anyone picking up?",
+  },
+  {
+    id: "chef_riku",
+    avatar: "R",
+    gradient: "from-red-400 to-rose-600",
+    name: "Chef Riku",
+    subtitle: "Food Designer \u2022 Age 34 \u2022 Earth immigrant",
+    quote: "Tell me what you ate today!",
+  },
+  {
+    id: "dr_nova",
+    avatar: "N",
+    gradient: "from-violet-400 to-purple-600",
+    name: "Dr. Nova",
+    subtitle: "Terraforming Chief \u2022 Age 41 \u2022 Mars-born",
+    quote: "5 minutes before the dust storm hits.",
+  },
+] as const;
+
 export function LandingScreen({ onAccept }: LandingScreenProps) {
+  const [selectedCharacter, setSelectedCharacter] = useState<string>("zeph");
+
+  const selectedData = characters.find((c) => c.id === selectedCharacter)!;
+  const buttonLabel = `Call ${selectedData.name}`;
+
   return (
     <div className="flex h-full items-center justify-center px-4">
       <style>{`
@@ -22,7 +56,7 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
         }
       `}</style>
 
-      <div className="text-center w-full max-w-md">
+      <div className="text-center w-full max-w-2xl">
         {/* Network badge */}
         <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-amber-500/20 bg-amber-500/5">
           <span className="text-amber-500/70 text-[10px] tracking-[0.4em] uppercase">
@@ -66,36 +100,65 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
           </div>
         </div>
 
-        {/* Card and button */}
+        {/* Cards and button */}
         <div style={{ animation: "appear 3.5s ease-out forwards", opacity: 0 }}>
-          {/* Caller card */}
-          <div className="mx-auto max-w-sm mb-8">
-            <div className="rounded-2xl border border-orange-400/15 bg-zinc-900/70 backdrop-blur p-5 text-left">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-black font-bold text-lg shrink-0">
-                  Z
-                </div>
-                <div className="min-w-0">
-                  <div className="text-white text-base font-bold">Zeph</div>
-                  <div className="text-zinc-500 text-xs">Mars-born &bull; Age 16 &bull; Never visited Earth</div>
-                </div>
-                <div className="ml-auto flex items-end gap-0.5 shrink-0">
-                  <div className="w-1 h-2 bg-orange-400 rounded-sm" />
-                  <div className="w-1 h-3 bg-orange-400 rounded-sm" />
-                  <div className="w-1 h-4 bg-amber-400 rounded-sm" />
-                  <div className="w-1 h-5 bg-amber-400 rounded-sm" />
-                </div>
-              </div>
-              <p className="text-zinc-400 text-sm italic leading-relaxed">
-                &quot;Yo, is anyone on Earth picking up? This quantum relay thing is actually working!&quot;
-              </p>
+          {/* Character cards — horizontal scrollable row */}
+          <div className="mb-8 -mx-4 px-4">
+            <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide justify-center">
+              {characters.map((char) => {
+                const isSelected = selectedCharacter === char.id;
+                return (
+                  <button
+                    key={char.id}
+                    type="button"
+                    onClick={() => setSelectedCharacter(char.id)}
+                    className={`
+                      flex-shrink-0 w-56 rounded-2xl border backdrop-blur p-5 text-left
+                      transition-all duration-200 cursor-pointer snap-center
+                      ${
+                        isSelected
+                          ? "border-orange-400/60 bg-zinc-900/80"
+                          : "border-zinc-700/30 bg-zinc-900/40 opacity-50 hover:opacity-75"
+                      }
+                    `}
+                    style={
+                      isSelected
+                        ? { boxShadow: "0 0 20px rgba(251,146,60,0.15), 0 0 40px rgba(251,146,60,0.05)" }
+                        : undefined
+                    }
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <div
+                        className={`w-10 h-10 rounded-full bg-gradient-to-br ${char.gradient} flex items-center justify-center text-black font-bold text-sm shrink-0`}
+                      >
+                        {char.avatar}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-white text-sm font-bold">{char.name}</div>
+                        <div className="text-zinc-500 text-[10px] leading-tight">{char.subtitle}</div>
+                      </div>
+                    </div>
+                    <p className="text-zinc-400 text-xs italic leading-relaxed">
+                      &quot;{char.quote}&quot;
+                    </p>
+                    {isSelected && (
+                      <div className="flex items-end gap-0.5 mt-3">
+                        <div className="w-1 h-2 bg-orange-400 rounded-sm" />
+                        <div className="w-1 h-3 bg-orange-400 rounded-sm" />
+                        <div className="w-1 h-4 bg-amber-400 rounded-sm" />
+                        <div className="w-1 h-5 bg-amber-400 rounded-sm" />
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Accept button — orange/amber, no green */}
+          {/* Accept button */}
           <button
             type="button"
-            onClick={() => { onAccept(); }}
+            onClick={() => { onAccept(selectedCharacter); }}
             className="inline-flex items-center justify-center cursor-pointer gap-3 px-10 py-4 rounded-full border-2 border-orange-400/50 bg-orange-400/10 hover:bg-orange-400/20 active:bg-orange-400/30 active:scale-95 transition-all duration-200"
             style={{ boxShadow: "0 0 25px rgba(193,68,14,0.15), inset 0 0 25px rgba(193,68,14,0.05)" }}
           >
@@ -104,7 +167,7 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
             </svg>
             <span className="text-orange-400 text-base tracking-[0.15em] uppercase font-bold"
               style={{ textShadow: "0 0 12px rgba(193,68,14,0.5)" }}>
-              Accept Transmission
+              {buttonLabel}
             </span>
           </button>
 

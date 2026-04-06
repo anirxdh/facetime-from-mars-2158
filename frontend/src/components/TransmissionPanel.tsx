@@ -25,6 +25,7 @@ interface TransmissionPanelProps {
   sessionId: string | null;
   setSessionId: Dispatch<SetStateAction<string | null>>;
   onFocusChange?: (focus: "mars" | "earth" | "idle") => void;
+  character?: string;
 }
 
 const API_BASE = "";
@@ -90,6 +91,7 @@ export function TransmissionPanel({
   sessionId,
   setSessionId,
   onFocusChange,
+  character = "zeph",
 }: TransmissionPanelProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isListening, setIsListening] = useState(false);
@@ -121,7 +123,7 @@ export function TransmissionPanel({
       setIsProcessing(true);
       setSignalStatus("RECEIVING");
       try {
-        const res = await fetch(`${API_BASE}/api/intro`);
+        const res = await fetch(`${API_BASE}/api/intro?character=${character}`);
         const newSessionId = res.headers.get("X-Session-Id");
         const zephText = res.headers.get("X-Zeph-Text");
         if (newSessionId) setSessionId(newSessionId);
@@ -201,7 +203,7 @@ export function TransmissionPanel({
       const res = await fetch(`${API_BASE}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, session_id: sessionId }),
+        body: JSON.stringify({ text, session_id: sessionId, character }),
       });
       const newSessionId = res.headers.get("X-Session-Id");
       const zephText = res.headers.get("X-Zeph-Text");
@@ -268,13 +270,16 @@ export function TransmissionPanel({
         <div className="flex items-center gap-4">
           <MarsClock />
           <span className="text-zinc-600 text-[9px]">|</span>
-          {/* End call button */}
+          <span className="text-orange-300/50 text-[10px] font-mono tracking-wider uppercase">
+            {character === "chef_riku" ? "Chef Riku" : character === "dr_nova" ? "Dr. Nova" : "Zeph"}
+          </span>
+          <span className="text-zinc-600 text-[9px]">|</span>
           <button
             type="button"
             onClick={() => setShowEndScreen(true)}
             className="text-red-400/60 hover:text-red-400 text-[9px] font-mono tracking-wider uppercase transition-colors cursor-pointer"
           >
-            END CALL
+            END
           </button>
         </div>
       </div>

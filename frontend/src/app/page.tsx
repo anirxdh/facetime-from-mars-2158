@@ -29,12 +29,14 @@ export default function Home() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [canRender3D, setCanRender3D] = useState(false);
   const [cameraFocus, setCameraFocus] = useState<CameraFocus>("idle");
+  const [character, setCharacter] = useState("zeph");
 
   useEffect(() => {
     setCanRender3D(hasWebGL());
   }, []);
 
-  const handleAcceptTransmission = useCallback(() => {
+  const handleAcceptTransmission = useCallback((selectedCharacter: string) => {
+    setCharacter(selectedCharacter);
     setAppState("connecting");
     setTimeout(() => {
       setAppState("connected");
@@ -112,6 +114,7 @@ export default function Home() {
             sessionId={sessionId}
             setSessionId={setSessionId}
             onFocusChange={setCameraFocus}
+            character={character}
           />
         )}
       </div>
