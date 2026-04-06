@@ -11,6 +11,7 @@ const MarsScene = dynamic(() => import("@/components/MarsScene"), {
 });
 
 type AppState = "landing" | "connecting" | "connected";
+type CameraFocus = "mars" | "earth" | "idle";
 
 function hasWebGL(): boolean {
   try {
@@ -27,6 +28,7 @@ export default function Home() {
   const [appState, setAppState] = useState<AppState>("landing");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [canRender3D, setCanRender3D] = useState(false);
+  const [cameraFocus, setCameraFocus] = useState<CameraFocus>("idle");
 
   useEffect(() => {
     setCanRender3D(hasWebGL());
@@ -41,7 +43,7 @@ export default function Home() {
 
   return (
     <main className="relative h-screen w-screen overflow-hidden bg-[#06060a]">
-      {/* Background gradient for depth */}
+      {/* Background gradient */}
       <div
         className="fixed inset-0 z-0"
         style={{
@@ -49,14 +51,14 @@ export default function Home() {
         }}
       />
 
-      {/* 3D background - only if WebGL available */}
+      {/* 3D background */}
       {canRender3D && (
         <div className="fixed inset-0 z-0">
-          <MarsScene appState={appState} />
+          <MarsScene appState={appState} focus={cameraFocus} />
         </div>
       )}
 
-      {/* CSS stars - always visible */}
+      {/* CSS stars */}
       <div className="fixed inset-0 z-0 overflow-hidden">
         {Array.from({ length: 120 }).map((_, i) => (
           <div
@@ -109,6 +111,7 @@ export default function Home() {
           <TransmissionPanel
             sessionId={sessionId}
             setSessionId={setSessionId}
+            onFocusChange={setCameraFocus}
           />
         )}
       </div>
