@@ -128,11 +128,11 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
                 className="relative text-left rounded-xl p-4 transition-all duration-300 cursor-pointer group"
                 style={{
                   background: active
-                    ? `linear-gradient(135deg, ${c.color}10 0%, ${c.color}05 100%)`
-                    : "rgba(255,255,255,0.02)",
-                  border: `1px solid ${active ? c.color + "40" : "rgba(255,255,255,0.04)"}`,
-                  boxShadow: active ? `0 0 30px ${c.color}15, inset 0 0 30px ${c.color}08` : "none",
-                  opacity: active ? 1 : 0.45,
+                    ? `linear-gradient(135deg, #0f0d0b, #12100d)`
+                    : "#0a0908",
+                  border: `1px solid ${active ? c.color + "40" : "rgba(255,255,255,0.06)"}`,
+                  boxShadow: active ? `0 0 20px ${c.color}12` : "none",
+                  opacity: active ? 1 : 0.5,
                   transform: active ? "scale(1)" : "scale(0.97)",
                 }}
               >
