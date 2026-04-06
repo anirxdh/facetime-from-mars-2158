@@ -75,7 +75,7 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
         </h1>
 
         <p className="text-[var(--text-dim)] text-xs tracking-[0.3em] uppercase">
-          Mars Colony One &middot; Year 2158
+          Mars Colony One &middot; Year 2159
         </p>
       </div>
 

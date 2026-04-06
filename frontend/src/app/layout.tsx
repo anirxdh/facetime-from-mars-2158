@@ -9,8 +9,8 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Signal From Mars — FaceTime from 2158",
-  description: "Talk to colonists on Mars via quantum relay. Year 2158.",
+  title: "Signal From Mars — FaceTime from 2159",
+  description: "Talk to colonists on Mars via quantum relay. Year 2159.",
 };
 
 export default function RootLayout({
