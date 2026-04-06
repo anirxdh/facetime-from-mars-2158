@@ -12,11 +12,14 @@ function CameraController({ focus }: { focus: "mars" | "earth" | "idle" }) {
 
   useFrame((_, delta) => {
     if (focus === "earth") {
-      targetPos.current.set(5, 1.5, -4);
+      // Pan toward Earth (right side)
+      targetPos.current.set(4, 1, -2);
     } else if (focus === "mars") {
-      targetPos.current.set(-1, 0, 5);
+      // Pan toward Mars (left side, closer)
+      targetPos.current.set(-3, 0, 4);
     } else {
-      targetPos.current.set(0, 0, 7);
+      // Default wide view showing both
+      targetPos.current.set(1, 0.5, 7);
     }
 
     camera.position.lerp(targetPos.current, delta * 1.5);
