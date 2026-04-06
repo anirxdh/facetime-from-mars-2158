@@ -69,10 +69,8 @@ function Mars({ appState }: { appState: string }) {
   }, []);
 
   useFrame((_, delta) => {
-    meshRef.current.rotation.y += delta * 0.06;
-    if (atmosRef.current) {
-      atmosRef.current.rotation.y += delta * 0.04;
-    }
+    if (meshRef.current) meshRef.current.rotation.y += delta * 0.06;
+    if (atmosRef.current) atmosRef.current.rotation.y += delta * 0.04;
   });
 
   const scale = appState === "connected" ? 1.8 : 2.5;
@@ -139,7 +137,7 @@ function Earth() {
   }, []);
 
   useFrame((_, delta) => {
-    meshRef.current.rotation.y += delta * 0.1;
+    if (meshRef.current) meshRef.current.rotation.y += delta * 0.1;
   });
 
   return (
@@ -156,6 +154,7 @@ function Satellite() {
   const groupRef = useRef<THREE.Group>(null!);
 
   useFrame(({ clock }) => {
+    if (!groupRef.current) return;
     const t = clock.getElapsedTime() * 0.3;
     groupRef.current.position.x = Math.sin(t) * 4;
     groupRef.current.position.z = Math.cos(t) * 4;

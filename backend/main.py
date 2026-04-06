@@ -8,6 +8,7 @@ import httpx
 import os
 import uuid
 from typing import Optional
+from urllib.parse import quote
 
 load_dotenv()
 
@@ -15,10 +16,10 @@ app = FastAPI(title="Signal From Mars")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5000"],
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type"],
+    allow_methods=["*"],
+    allow_headers=["*"],
     expose_headers=["X-Zeph-Text", "X-Session-Id"],
 )
 
@@ -128,7 +129,7 @@ async def chat(req: ChatRequest):
         content=tts_response.content,
         media_type="audio/mpeg",
         headers={
-            "X-Zeph-Text": zeph_text.replace("\n", " "),
+            "X-Zeph-Text": quote(zeph_text.replace("\n", " ")),
             "X-Session-Id": session_id,
         }
     )
@@ -171,7 +172,7 @@ async def intro():
         content=tts_response.content,
         media_type="audio/mpeg",
         headers={
-            "X-Zeph-Text": intro_text,
+            "X-Zeph-Text": quote(intro_text),
             "X-Session-Id": session_id,
         }
     )

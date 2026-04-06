@@ -57,9 +57,10 @@ export function TransmissionPanel({
         if (res.headers.get("content-type")?.includes("audio")) {
           const blob = await res.blob();
           const url = URL.createObjectURL(blob);
+          const decoded = zephText ? decodeURIComponent(zephText) : null;
           playAudio(url);
-          if (zephText) {
-            setMessages([{ role: "zeph", text: zephText }]);
+          if (decoded) {
+            setMessages([{ role: "zeph", text: decoded }]);
           }
         } else {
           const data = await res.json();
@@ -163,10 +164,17 @@ export function TransmissionPanel({
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         if (zephText) {
-          setMessages((prev) => [
-            ...prev,
-            { role: "zeph", text: decodeURIComponent(zephText) },
-          ]);
+          try {
+            setMessages((prev) => [
+              ...prev,
+              { role: "zeph", text: decodeURIComponent(zephText) },
+            ]);
+          } catch {
+            setMessages((prev) => [
+              ...prev,
+              { role: "zeph", text: zephText },
+            ]);
+          }
         }
         setSignalStatus("RECEIVING");
         playAudio(url);
