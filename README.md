@@ -6,6 +6,23 @@ Built for [ElevenLabs x Replit Hackathon](https://elevenlabs.io) (#ElevenHacks)
 
 ---
 
+## Quick Start — Add Your API Keys
+
+You need **two API keys** to run this app:
+
+| Key | Where to get it |
+|-----|----------------|
+| `ANTHROPIC_API_KEY` | [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys) |
+| `ELEVENLABS_API_KEY` | [elevenlabs.io/app/settings/api-keys](https://elevenlabs.io/app/settings/api-keys) |
+
+**On Replit:** Go to Secrets tab (lock icon) → add both keys → restart.
+
+**Locally:** Copy `backend/.env.example` to `backend/.env` and paste your keys.
+
+That's it. No other config needed — voice IDs are hardcoded for all 3 characters.
+
+---
+
 ## What is this?
 
 A voice-powered web app where you call people living on Mars in the year 2159. Humans migrated to Mars in 2070 — now it's 90 years later and you can talk to three Mars colonists in real-time via a quantum relay connection.
