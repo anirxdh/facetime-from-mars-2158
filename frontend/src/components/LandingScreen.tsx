@@ -102,9 +102,9 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
 
         {/* Cards and button */}
         <div style={{ animation: "appear 3.5s ease-out forwards", opacity: 0 }}>
-          {/* Character cards — horizontal scrollable row */}
-          <div className="mb-8 -mx-4 px-4">
-            <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide justify-center">
+          {/* Character cards */}
+          <div className="mb-8">
+            <div className="grid grid-cols-3 gap-3 max-w-2xl mx-auto">
               {characters.map((char) => {
                 const isSelected = selectedCharacter === char.id;
                 return (
@@ -113,11 +113,11 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
                     type="button"
                     onClick={() => setSelectedCharacter(char.id)}
                     className={`
-                      flex-shrink-0 w-56 rounded-2xl border backdrop-blur p-5 text-left
-                      transition-all duration-200 cursor-pointer snap-center
+                      rounded-2xl border backdrop-blur p-4 text-left
+                      transition-all duration-200 cursor-pointer
                       ${
                         isSelected
-                          ? "border-orange-400/60 bg-zinc-900/80"
+                          ? "border-orange-400/60 bg-zinc-900/80 scale-[1.02]"
                           : "border-zinc-700/30 bg-zinc-900/40 opacity-50 hover:opacity-75"
                       }
                     `}
@@ -127,22 +127,22 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
                         : undefined
                     }
                   >
-                    <div className="flex items-center gap-3 mb-3">
+                    <div className="flex items-center gap-2.5 mb-2.5">
                       <div
-                        className={`w-10 h-10 rounded-full bg-gradient-to-br ${char.gradient} flex items-center justify-center text-black font-bold text-sm shrink-0`}
+                        className={`w-9 h-9 rounded-full bg-gradient-to-br ${char.gradient} flex items-center justify-center text-black font-bold text-xs shrink-0`}
                       >
                         {char.avatar}
                       </div>
                       <div className="min-w-0">
-                        <div className="text-white text-sm font-bold">{char.name}</div>
-                        <div className="text-zinc-500 text-[10px] leading-tight">{char.subtitle}</div>
+                        <div className="text-white text-sm font-bold leading-tight">{char.name}</div>
+                        <div className="text-zinc-500 text-[9px] leading-tight">{char.subtitle}</div>
                       </div>
                     </div>
-                    <p className="text-zinc-400 text-xs italic leading-relaxed">
+                    <p className="text-zinc-400 text-[11px] italic leading-relaxed">
                       &quot;{char.quote}&quot;
                     </p>
                     {isSelected && (
-                      <div className="flex items-end gap-0.5 mt-3">
+                      <div className="flex items-end gap-0.5 mt-2">
                         <div className="w-1 h-2 bg-orange-400 rounded-sm" />
                         <div className="w-1 h-3 bg-orange-400 rounded-sm" />
                         <div className="w-1 h-4 bg-amber-400 rounded-sm" />
