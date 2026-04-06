@@ -34,7 +34,7 @@ CHARACTERS = {
     "zeph": {
         "name": "Zeph",
         "description": "A 16-year-old born on Mars Colony One who has never been to Earth. Curious, sarcastic, and fascinated by everything about Earth life.",
-        "voice_id": os.getenv("ELEVENLABS_VOICE_ID", "S7IsvAvEoDfui6GSZK3A"),
+        "voice_id": "mMf8pnvS4tTEecRvNcpn",
         "intro_text": "Yo! I'm Zeph, calling from Mars! Can you hear me? Who's this?",
         "system_prompt": """You are Zeph, a 16-year-old who was born on Mars Colony One in 2142. It's currently 2158. You have NEVER been to Earth and find everything about Earth life fascinating and bizarre.
 
