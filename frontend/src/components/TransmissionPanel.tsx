@@ -249,90 +249,98 @@ export function TransmissionPanel({
     );
   }
 
+  const charName = character === "chef_riku" ? "Chef Riku" : character === "dr_nova" ? "Dr. Nova" : "Zeph";
+
   return (
-    <div className="h-full flex flex-col justify-end p-4 md:p-6">
+    <div className="h-full flex flex-col justify-end p-4 md:p-6 noise">
       <SignalGlitch active={!isProcessing} />
 
-      {/* Top bar — Mars HUD style */}
-      <div className="absolute top-0 left-0 right-0 px-4 py-3 flex items-center justify-between"
-        style={{ background: "linear-gradient(180deg, rgba(6,6,10,0.9) 0%, transparent 100%)" }}>
+      {/* Top HUD bar */}
+      <div className="absolute top-0 left-0 right-0 z-20 px-5 py-3 flex items-center justify-between"
+        style={{ background: "linear-gradient(180deg, rgba(5,5,8,0.95) 0%, rgba(5,5,8,0.6) 70%, transparent 100%)" }}>
+        {/* Left: status */}
         <div className="flex items-center gap-3">
-          <div className={`w-2 h-2 rounded-full ${
-            isProcessing ? "bg-orange-400 animate-pulse"
-              : isPlaying ? "bg-red-400 animate-pulse"
-              : "bg-orange-400"
-          }`} />
-          <span className="text-orange-300/70 text-[10px] tracking-[0.3em] uppercase font-mono">
-            {signalStatus}
-          </span>
+          <div className="flex items-center gap-2">
+            <div className={`w-1.5 h-1.5 rounded-full ${
+              isProcessing ? "bg-[var(--amber)] animate-pulse"
+                : isPlaying ? "bg-[var(--mars)] animate-pulse"
+                : "bg-[var(--amber)]"
+            }`} />
+            <span className="text-[var(--amber)]/50 text-[9px] tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-display)" }}>
+              {signalStatus}
+            </span>
+          </div>
           <AmbientSound />
         </div>
-        <div className="flex items-center gap-4">
+        {/* Right: info + controls */}
+        <div className="flex items-center gap-3">
           <MarsClock />
-          <span className="text-zinc-600 text-[9px]">|</span>
-          <span className="text-orange-300/50 text-[10px] font-mono tracking-wider uppercase">
-            {character === "chef_riku" ? "Chef Riku" : character === "dr_nova" ? "Dr. Nova" : "Zeph"}
+          <div className="w-px h-3 bg-white/10" />
+          <span className="text-[var(--amber)]/60 text-[9px] tracking-wider uppercase" style={{ fontFamily: "var(--font-display)" }}>
+            {charName}
           </span>
-          <span className="text-zinc-600 text-[9px]">|</span>
+          <div className="w-px h-3 bg-white/10" />
           <button
             type="button"
             onClick={() => setShowEndScreen(true)}
-            className="text-red-400/60 hover:text-red-400 text-[9px] font-mono tracking-wider uppercase transition-colors cursor-pointer"
+            className="text-red-400/40 hover:text-red-400 text-[9px] tracking-wider uppercase transition-colors cursor-pointer"
+            style={{ fontFamily: "var(--font-display)" }}
           >
-            END
+            End
           </button>
         </div>
       </div>
 
-      {/* Chat area — Mars themed */}
-      <div className="w-full max-w-lg mx-auto mb-4 max-h-[55vh] overflow-y-auto rounded-xl p-4"
-        style={{
-          background: "linear-gradient(135deg, rgba(20,10,5,0.8) 0%, rgba(10,8,6,0.7) 100%)",
-          border: "1px solid rgba(193,68,14,0.15)",
-          boxShadow: "inset 0 0 30px rgba(0,0,0,0.3), 0 0 20px rgba(193,68,14,0.05)",
-        }}>
+      {/* Chat area */}
+      <div className="w-full max-w-lg mx-auto mb-4 max-h-[55vh] overflow-y-auto rounded-2xl p-5 panel panel-glow relative scanlines">
         {messages.length === 0 && (
-          <div className="text-orange-400/30 text-xs text-center py-8 tracking-wider uppercase">
+          <div className="text-[var(--text-dim)] text-xs text-center py-10 tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-display)" }}>
             Awaiting transmission...
           </div>
         )}
 
         {messages.map((msg, i) => (
-          <div key={i} className={`mb-4 fade-in ${msg.role === "user" ? "text-right" : "text-left"}`}>
-            <div className={`text-[9px] mb-1.5 uppercase tracking-[0.2em] font-mono ${
-              msg.role === "user" ? "text-blue-400/50" : "text-orange-400/50"
-            }`}>
-              {msg.role === "user" ? "EARTH → MARS" : "MARS → EARTH"}
+          <div key={i} className={`mb-5 fade-in ${msg.role === "user" ? "text-right" : "text-left"}`}>
+            <div className={`text-[8px] mb-2 uppercase tracking-[0.25em] ${
+              msg.role === "user" ? "text-[var(--earth-blue)]/40" : "text-[var(--amber)]/40"
+            }`} style={{ fontFamily: "var(--font-display)" }}>
+              {msg.role === "user" ? "Earth → Mars" : `${charName} → Earth`}
             </div>
-            <div className={`inline-block max-w-[85%] px-4 py-2.5 rounded-xl text-sm leading-relaxed ${
+            <div className={`inline-block max-w-[85%] px-4 py-3 rounded-2xl text-[13px] leading-relaxed ${
               msg.role === "user"
-                ? "bg-blue-500/10 text-blue-200 border border-blue-400/15 rounded-br-sm"
-                : "bg-orange-500/10 text-orange-200 border border-orange-400/15 rounded-bl-sm"
-            }`}>
+                ? "rounded-br-md"
+                : "rounded-bl-md"
+            }`} style={{
+              background: msg.role === "user" ? "rgba(74,144,217,0.08)" : "rgba(232,160,52,0.06)",
+              border: `1px solid ${msg.role === "user" ? "rgba(74,144,217,0.12)" : "rgba(232,160,52,0.1)"}`,
+              color: msg.role === "user" ? "#a8c8e8" : "#d4b483",
+            }}>
               {msg.text}
             </div>
           </div>
         ))}
 
         {isListening && currentTranscript && (
-          <div className="mb-4 text-right fade-in">
-            <div className="text-[9px] text-blue-400/50 mb-1.5 uppercase tracking-[0.2em] font-mono">
-              TRANSMITTING...
+          <div className="mb-5 text-right fade-in">
+            <div className="text-[8px] text-[var(--earth-blue)]/40 mb-2 uppercase tracking-[0.25em]" style={{ fontFamily: "var(--font-display)" }}>
+              Transmitting...
             </div>
-            <div className="inline-block max-w-[85%] px-4 py-2.5 rounded-xl rounded-br-sm text-sm bg-blue-500/5 text-blue-300/60 border border-blue-400/10">
+            <div className="inline-block max-w-[85%] px-4 py-3 rounded-2xl rounded-br-md text-[13px]"
+              style={{ background: "rgba(74,144,217,0.04)", border: "1px solid rgba(74,144,217,0.08)", color: "#a8c8e8" }}>
               {currentTranscript}<span className="blink">|</span>
             </div>
           </div>
         )}
 
         {isProcessing && (
-          <div className="mb-4 text-left fade-in">
-            <div className="text-[9px] text-orange-400/50 mb-1.5 uppercase tracking-[0.2em] font-mono">
+          <div className="mb-5 text-left fade-in">
+            <div className="text-[8px] text-[var(--amber)]/40 mb-2 uppercase tracking-[0.25em]" style={{ fontFamily: "var(--font-display)" }}>
               Signal in transit
             </div>
-            <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-orange-500/5 border border-orange-400/10">
-              <div className="signal-travel text-orange-400 text-xs">&#x2022; &#x2022; &#x2022;</div>
-              <span className="text-orange-400/40 text-[10px] font-mono">225M km</span>
+            <div className="inline-flex items-center gap-3 px-4 py-3 rounded-2xl"
+              style={{ background: "rgba(232,160,52,0.04)", border: "1px solid rgba(232,160,52,0.08)" }}>
+              <div className="signal-travel text-[var(--amber)] text-xs">&#x2022; &#x2022; &#x2022;</div>
+              <span className="text-[var(--text-dim)] text-[9px] font-mono">225M km</span>
             </div>
           </div>
         )}
@@ -340,14 +348,14 @@ export function TransmissionPanel({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Suggested topic chips */}
+      {/* Topic chips */}
       {showTopics && (
         <div className="w-full max-w-lg mx-auto mb-3">
           <TopicChips onSelect={sendMessage} />
         </div>
       )}
 
-      {/* Controls area */}
+      {/* Controls */}
       <div className="w-full max-w-lg mx-auto">
         {isPlaying && (
           <div className="mb-4">
@@ -364,11 +372,14 @@ export function TransmissionPanel({
           />
         </div>
 
-        <div className="mt-3 text-center text-[10px] tracking-wider uppercase"
-          style={{ color: isListening ? "#60a5fa" : isPlaying ? "#c1440e" : "#52525b" }}>
+        <div className="mt-3 text-center text-[9px] tracking-[0.2em] uppercase"
+          style={{
+            fontFamily: "var(--font-display)",
+            color: isListening ? "var(--earth-blue)" : isPlaying ? "var(--mars)" : "var(--text-dim)",
+          }}>
           {isListening ? "Release to send"
             : isProcessing ? "Signal traveling to Mars..."
-            : isPlaying ? "Zeph is speaking..."
+            : isPlaying ? `${charName} is speaking...`
             : "Hold to transmit"}
         </div>
       </div>

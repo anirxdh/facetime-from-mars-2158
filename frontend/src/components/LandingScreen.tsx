@@ -10,181 +10,208 @@ const characters = [
   {
     id: "zeph",
     avatar: "Z",
-    gradient: "from-amber-400 to-orange-600",
+    color: "#e8a034",
     name: "Zeph",
-    subtitle: "Mars-born \u2022 Age 16 \u2022 Never visited Earth",
+    role: "Colony Kid",
+    age: 16,
+    detail: "Never visited Earth",
     quote: "Yo, is anyone picking up?",
   },
   {
     id: "chef_riku",
     avatar: "R",
-    gradient: "from-red-400 to-rose-600",
+    color: "#e85d4a",
     name: "Chef Riku",
-    subtitle: "Food Designer \u2022 Age 34 \u2022 2nd gen Mars-born",
+    role: "Food Designer",
+    age: 34,
+    detail: "2nd gen Mars-born",
     quote: "Tell me what you ate today!",
   },
   {
     id: "dr_nova",
     avatar: "N",
-    gradient: "from-violet-400 to-purple-600",
+    color: "#9b7ae8",
     name: "Dr. Nova",
-    subtitle: "Terraforming Chief \u2022 Age 41 \u2022 Mars-born",
-    quote: "5 minutes before the dust storm hits.",
+    role: "Terraforming Chief",
+    age: 41,
+    detail: "Mars-born pioneer",
+    quote: "5 min before the dust storm.",
   },
 ] as const;
 
 export function LandingScreen({ onAccept }: LandingScreenProps) {
-  const [selectedCharacter, setSelectedCharacter] = useState<string>("zeph");
-
-  const selectedData = characters.find((c) => c.id === selectedCharacter)!;
-  const buttonLabel = `Call ${selectedData.name}`;
+  const [selected, setSelected] = useState("zeph");
+  const char = characters.find((c) => c.id === selected)!;
 
   return (
-    <div className="flex h-full items-center justify-center px-4">
+    <div className="h-full flex flex-col items-center justify-center px-4 py-8 noise">
       <style>{`
-        @keyframes fill-signal {
+        @keyframes bar-fill {
           0% { width: 0%; }
-          100% { width: 100%; box-shadow: 0 0 12px rgba(245,158,11,0.4); }
+          100% { width: 100%; }
         }
-        @keyframes appear {
-          0%, 80% { opacity: 0; transform: translateY(12px); pointer-events: none; }
-          100% { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        @keyframes reveal-up {
+          0%, 70% { opacity: 0; transform: translateY(20px); }
+          100% { opacity: 1; transform: translateY(0); }
         }
-        @keyframes dot-pulse {
-          0%, 85% { opacity: 0.5; }
-          100% { opacity: 1; }
+        @keyframes glow-pulse {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 1; }
         }
       `}</style>
 
-      <div className="text-center w-full max-w-2xl">
-        {/* Network badge */}
-        <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-amber-500/20 bg-amber-500/5">
-          <span className="text-amber-500/70 text-[10px] tracking-[0.4em] uppercase">
-            Quantum Relay Network v4.2
+      {/* Top decorative line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--mars)]/20 to-transparent" />
+
+      {/* Header cluster */}
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full border border-[var(--amber)]/10 bg-[var(--amber)]/5">
+          <div className="w-1.5 h-1.5 rounded-full bg-[var(--amber)]" style={{ animation: "glow-pulse 2s ease-in-out infinite" }} />
+          <span className="text-[var(--amber)]/60 text-[10px] tracking-[0.5em] uppercase" style={{ fontFamily: "var(--font-display)" }}>
+            Quantum Relay v4.2
           </span>
         </div>
 
-        {/* Title */}
         <h1
-          className="text-amber-400 text-4xl md:text-6xl font-bold uppercase tracking-wider leading-tight mb-2"
-          style={{ textShadow: "0 0 40px rgba(245,158,11,0.3), 0 0 80px rgba(245,158,11,0.15)" }}
+          className="text-5xl md:text-7xl font-black uppercase tracking-wider leading-[0.9] mb-4"
+          style={{
+            fontFamily: "var(--font-display)",
+            color: "var(--amber)",
+            textShadow: "0 0 60px rgba(232,160,52,0.25), 0 0 120px rgba(193,68,14,0.15)",
+          }}
         >
-          Incoming<br />Transmission
+          Signal<br />From Mars
         </h1>
 
-        {/* Divider */}
-        <div className="mx-auto w-48 h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent my-6" />
-
-        {/* Origin */}
-        <p className="text-zinc-300 text-sm tracking-widest uppercase mb-3">
-          Origin: Mars Colony One, Dome 7
+        <p className="text-[var(--text-dim)] text-xs tracking-[0.3em] uppercase">
+          Mars Colony One &middot; Dome 7 &middot; Year 2158
         </p>
-        <div className="flex items-center justify-center gap-2 text-[10px] font-mono mb-10 flex-wrap">
-          <span className="px-2.5 py-1 rounded-md border border-zinc-700/60 bg-zinc-800/40 text-zinc-400">Sol 6,847</span>
-          <span className="px-2.5 py-1 rounded-md border border-zinc-700/60 bg-zinc-800/40 text-zinc-400">14.6&deg;S, 175.5&deg;E</span>
-          <span className="px-2.5 py-1 rounded-md border border-amber-500/30 bg-amber-500/10 text-amber-400 font-bold">Year 2158</span>
+      </div>
+
+      {/* Signal acquisition bar */}
+      <div className="w-full max-w-md mb-10">
+        <div className="flex items-center justify-between mb-1.5 px-1">
+          <span className="text-[var(--amber)]/50 text-[9px] tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-display)" }}>
+            Signal Lock
+          </span>
+          <span className="text-[var(--amber)]/30 text-[9px] font-mono">225M KM</span>
         </div>
-
-        {/* Signal bar */}
-        <div className="mx-auto max-w-sm mb-10">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-amber-400" style={{ animation: "dot-pulse 3s ease-out forwards" }} />
-              <span className="text-amber-400/70 text-[10px] uppercase tracking-widest">
-                Acquiring Signal
-              </span>
-            </div>
-          </div>
-          <div className="h-2 bg-zinc-800 rounded-full overflow-hidden border border-zinc-700/40">
-            <div className="h-full rounded-full bg-gradient-to-r from-orange-500 to-amber-400" style={{ animation: "fill-signal 3s ease-out forwards" }} />
-          </div>
-        </div>
-
-        {/* Cards and button */}
-        <div style={{ animation: "appear 3.5s ease-out forwards", opacity: 0 }}>
-          {/* Character cards */}
-          <div className="mb-8">
-            <div className="grid grid-cols-3 gap-3 max-w-2xl mx-auto">
-              {characters.map((char) => {
-                const isSelected = selectedCharacter === char.id;
-                return (
-                  <button
-                    key={char.id}
-                    type="button"
-                    onClick={() => setSelectedCharacter(char.id)}
-                    className={`
-                      rounded-2xl border backdrop-blur p-4 text-left
-                      transition-all duration-200 cursor-pointer
-                      ${
-                        isSelected
-                          ? "border-orange-400/60 bg-zinc-900/80 scale-[1.02]"
-                          : "border-zinc-700/30 bg-zinc-900/40 opacity-50 hover:opacity-75"
-                      }
-                    `}
-                    style={
-                      isSelected
-                        ? { boxShadow: "0 0 20px rgba(251,146,60,0.15), 0 0 40px rgba(251,146,60,0.05)" }
-                        : undefined
-                    }
-                  >
-                    <div className="flex items-center gap-2.5 mb-2.5">
-                      <div
-                        className={`w-9 h-9 rounded-full bg-gradient-to-br ${char.gradient} flex items-center justify-center text-black font-bold text-xs shrink-0`}
-                      >
-                        {char.avatar}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="text-white text-sm font-bold leading-tight">{char.name}</div>
-                        <div className="text-zinc-500 text-[9px] leading-tight">{char.subtitle}</div>
-                      </div>
-                    </div>
-                    <p className="text-zinc-400 text-[11px] italic leading-relaxed">
-                      &quot;{char.quote}&quot;
-                    </p>
-                    {isSelected && (
-                      <div className="flex items-end gap-0.5 mt-2">
-                        <div className="w-1 h-2 bg-orange-400 rounded-sm" />
-                        <div className="w-1 h-3 bg-orange-400 rounded-sm" />
-                        <div className="w-1 h-4 bg-amber-400 rounded-sm" />
-                        <div className="w-1 h-5 bg-amber-400 rounded-sm" />
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Accept button */}
-          <button
-            type="button"
-            onClick={() => { onAccept(selectedCharacter); }}
-            className="inline-flex items-center justify-center cursor-pointer gap-3 px-10 py-4 rounded-full border-2 border-orange-400/50 bg-orange-400/10 hover:bg-orange-400/20 active:bg-orange-400/30 active:scale-95 transition-all duration-200"
-            style={{ boxShadow: "0 0 25px rgba(193,68,14,0.15), inset 0 0 25px rgba(193,68,14,0.05)" }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-orange-400">
-              <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.2 2.2z" />
-            </svg>
-            <span className="text-orange-400 text-base tracking-[0.15em] uppercase font-bold"
-              style={{ textShadow: "0 0 12px rgba(193,68,14,0.5)" }}>
-              {buttonLabel}
-            </span>
-          </button>
-
-          <p className="mt-5 text-zinc-600 text-[10px] tracking-widest uppercase">
-            Microphone access required
-          </p>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-12 flex items-center justify-center gap-5 text-zinc-700 text-[9px] uppercase tracking-[0.3em]">
-          <span>Encrypted</span>
-          <span className="text-zinc-800">&bull;</span>
-          <span>Quantum Link</span>
-          <span className="text-zinc-800">&bull;</span>
-          <span>225M km</span>
+        <div className="h-[3px] bg-white/5 rounded-full overflow-hidden">
+          <div
+            className="h-full rounded-full"
+            style={{
+              background: "linear-gradient(90deg, var(--mars), var(--amber))",
+              animation: "bar-fill 2.5s ease-out forwards",
+              boxShadow: "0 0 8px var(--mars-glow)",
+            }}
+          />
         </div>
       </div>
+
+      {/* Character selector — the star of the show */}
+      <div
+        className="w-full max-w-2xl mb-8"
+        style={{ animation: "reveal-up 3.2s ease-out forwards", opacity: 0 }}
+      >
+        <p className="text-center text-[var(--text-dim)] text-[9px] tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "var(--font-display)" }}>
+          Choose your contact
+        </p>
+
+        <div className="grid grid-cols-3 gap-3">
+          {characters.map((c) => {
+            const active = selected === c.id;
+            return (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => setSelected(c.id)}
+                className="relative text-left rounded-xl p-4 transition-all duration-300 cursor-pointer group"
+                style={{
+                  background: active
+                    ? `linear-gradient(135deg, ${c.color}10 0%, ${c.color}05 100%)`
+                    : "rgba(255,255,255,0.02)",
+                  border: `1px solid ${active ? c.color + "40" : "rgba(255,255,255,0.04)"}`,
+                  boxShadow: active ? `0 0 30px ${c.color}15, inset 0 0 30px ${c.color}08` : "none",
+                  opacity: active ? 1 : 0.45,
+                  transform: active ? "scale(1)" : "scale(0.97)",
+                }}
+              >
+                {/* Active indicator dot */}
+                {active && (
+                  <div
+                    className="absolute top-3 right-3 w-2 h-2 rounded-full"
+                    style={{ background: c.color, boxShadow: `0 0 8px ${c.color}` }}
+                  />
+                )}
+
+                {/* Avatar */}
+                <div
+                  className="w-11 h-11 rounded-lg flex items-center justify-center text-black font-bold text-sm mb-3"
+                  style={{
+                    background: `linear-gradient(135deg, ${c.color}, ${c.color}99)`,
+                    fontFamily: "var(--font-display)",
+                  }}
+                >
+                  {c.avatar}
+                </div>
+
+                {/* Info */}
+                <div className="text-white text-sm font-bold mb-0.5" style={{ fontFamily: "var(--font-display)" }}>
+                  {c.name}
+                </div>
+                <div className="text-[10px] mb-2" style={{ color: c.color + "90" }}>
+                  {c.role} &middot; {c.age}
+                </div>
+                <div className="text-[var(--text-dim)] text-[10px] leading-relaxed">
+                  {c.detail}
+                </div>
+
+                {/* Quote */}
+                <div className="mt-3 pt-3 border-t" style={{ borderColor: active ? c.color + "15" : "rgba(255,255,255,0.03)" }}>
+                  <p className="text-[11px] italic" style={{ color: active ? c.color + "80" : "var(--text-dim)" }}>
+                    &ldquo;{c.quote}&rdquo;
+                  </p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Call button */}
+      <div
+        style={{ animation: "reveal-up 3.6s ease-out forwards", opacity: 0 }}
+        className="text-center"
+      >
+        <button
+          type="button"
+          onClick={() => onAccept(selected)}
+          className="group relative inline-flex items-center gap-3 px-10 py-4 rounded-full cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+          style={{
+            background: `linear-gradient(135deg, ${char.color}15, ${char.color}08)`,
+            border: `2px solid ${char.color}50`,
+            boxShadow: `0 0 30px ${char.color}15`,
+          }}
+        >
+          {/* Phone icon */}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style={{ color: char.color }}>
+            <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.2 2.2z" />
+          </svg>
+          <span
+            className="text-sm tracking-[0.2em] uppercase font-bold"
+            style={{ color: char.color, fontFamily: "var(--font-display)", textShadow: `0 0 20px ${char.color}40` }}
+          >
+            Call {char.name}
+          </span>
+        </button>
+
+        <p className="mt-4 text-[var(--text-dim)] text-[9px] tracking-[0.2em] uppercase">
+          Microphone required &middot; Encrypted channel
+        </p>
+      </div>
+
+      {/* Bottom decorative line */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--mars)]/10 to-transparent" />
     </div>
   );
 }
