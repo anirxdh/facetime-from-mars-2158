@@ -6,151 +6,147 @@ interface LandingScreenProps {
 
 export function LandingScreen({ onAccept }: LandingScreenProps) {
   return (
-    <div className="flex h-full items-center justify-center">
+    <div className="flex h-full items-center justify-center px-4">
       <style>{`
         @keyframes fill-bar {
           0% { width: 0%; }
           100% { width: 100%; }
         }
-        @keyframes reveal {
-          0% { opacity: 0; transform: translateY(10px); }
-          100% { opacity: 1; transform: translateY(0); }
+        @keyframes bar-glow {
+          0%, 90% { box-shadow: none; }
+          100% { box-shadow: 0 0 12px rgba(34,197,94,0.4); }
         }
         @keyframes dot-green {
-          0%, 90% { background-color: #f59e0b; }
+          0%, 85% { background-color: #f59e0b; }
           100% { background-color: #22c55e; }
         }
-        @keyframes text-swap-color {
-          0%, 90% { color: #a1a1aa; }
-          100% { color: #22c55e; }
-        }
-        @keyframes bar-color {
-          0%, 90% { background: linear-gradient(to right, #f97316, #f59e0b); }
-          100% { background: linear-gradient(to right, #22c55e, #4ade80); }
+        @keyframes reveal {
+          0% { opacity: 0; transform: translateY(16px); }
+          100% { opacity: 1; transform: translateY(0); }
         }
         .signal-bar-fill {
-          animation: fill-bar 2.3s ease-out forwards, bar-color 2.5s ease-out forwards;
+          animation: fill-bar 2.3s ease-out forwards, bar-glow 2.5s ease-out forwards;
+          background: linear-gradient(90deg, #f97316, #f59e0b);
+        }
+        .signal-bar-fill.done {
+          background: linear-gradient(90deg, #22c55e, #4ade80);
         }
         .signal-dot {
           animation: dot-green 2.5s ease-out forwards;
         }
-        .signal-label {
-          animation: text-swap-color 2.5s ease-out forwards;
-        }
-        .reveal-after-signal {
+        .reveal-after {
           opacity: 0;
-          animation: reveal 0.6s ease-out 2.6s forwards;
+          animation: reveal 0.7s ease-out 2.8s forwards;
         }
       `}</style>
 
-      <div className="text-center max-w-xl px-6 fade-in">
-        {/* Header badge */}
-        <div className="inline-block mb-5 px-3 py-1 rounded-full border border-amber-400/20 bg-amber-400/5">
-          <span className="text-amber-400/60 text-[9px] tracking-[0.5em] uppercase font-mono">
+      <div className="text-center w-full max-w-md fade-in">
+        {/* Network badge */}
+        <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-amber-500/20 bg-amber-500/5">
+          <span className="text-amber-500/70 text-[10px] tracking-[0.4em] uppercase">
             Quantum Relay Network v4.2
           </span>
         </div>
 
-        {/* Main title */}
-        <div className="mb-3">
-          <h1
-            className="text-amber-400 text-3xl md:text-5xl tracking-[0.15em] uppercase font-bold"
-            style={{ textShadow: "0 0 30px rgba(245,158,11,0.4), 0 0 60px rgba(245,158,11,0.2)" }}
-          >
-            Incoming
-          </h1>
-          <h1
-            className="text-amber-400 text-3xl md:text-5xl tracking-[0.15em] uppercase font-bold"
-            style={{ textShadow: "0 0 30px rgba(245,158,11,0.4), 0 0 60px rgba(245,158,11,0.2)" }}
-          >
-            Transmission
-          </h1>
-        </div>
+        {/* Title */}
+        <h1
+          className="text-amber-400 text-4xl md:text-6xl font-bold uppercase tracking-wider leading-tight mb-2"
+          style={{ textShadow: "0 0 40px rgba(245,158,11,0.3), 0 0 80px rgba(245,158,11,0.15)" }}
+        >
+          Incoming<br />Transmission
+        </h1>
 
         {/* Divider */}
-        <div className="mx-auto w-40 h-px bg-gradient-to-r from-transparent via-amber-400/50 to-transparent mb-5" />
+        <div className="mx-auto w-48 h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent my-6" />
 
-        {/* Origin info */}
-        <div className="mb-2 text-zinc-300 text-sm tracking-[0.15em] uppercase">
+        {/* Origin */}
+        <p className="text-zinc-300 text-sm tracking-widest uppercase mb-3">
           Origin: Mars Colony One, Dome 7
-        </div>
-        <div className="mb-8 flex items-center justify-center gap-3 text-zinc-500 text-[10px] font-mono flex-wrap">
-          <span className="px-2 py-0.5 rounded border border-zinc-800 bg-zinc-900/50">Sol 6,847</span>
-          <span className="px-2 py-0.5 rounded border border-zinc-800 bg-zinc-900/50">14.6&deg;S, 175.5&deg;E</span>
-          <span className="px-2 py-0.5 rounded border border-amber-400/20 bg-amber-400/5 text-amber-400/80">Year 2158</span>
+        </p>
+        <div className="flex items-center justify-center gap-2 text-[10px] font-mono mb-10 flex-wrap">
+          <span className="px-2.5 py-1 rounded-md border border-zinc-700/60 bg-zinc-800/40 text-zinc-400">
+            Sol 6,847
+          </span>
+          <span className="px-2.5 py-1 rounded-md border border-zinc-700/60 bg-zinc-800/40 text-zinc-400">
+            14.6&deg;S, 175.5&deg;E
+          </span>
+          <span className="px-2.5 py-1 rounded-md border border-amber-500/30 bg-amber-500/10 text-amber-400 font-bold">
+            Year 2158
+          </span>
         </div>
 
-        {/* Signal strength bar */}
-        <div className="mb-8 mx-auto max-w-xs">
+        {/* Signal bar */}
+        <div className="mx-auto max-w-sm mb-10">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full signal-dot" />
-              <span className="text-[10px] uppercase tracking-wider signal-label">
+              <div className="w-2 h-2 rounded-full signal-dot" />
+              <span className="text-zinc-400 text-[10px] uppercase tracking-widest">
                 Acquiring Signal
               </span>
             </div>
           </div>
-          <div className="h-1.5 bg-zinc-800/80 rounded-full overflow-hidden border border-zinc-700/50">
-            <div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400 signal-bar-fill" />
+          <div className="h-2 bg-zinc-800 rounded-full overflow-hidden border border-zinc-700/40">
+            <div className="h-full rounded-full signal-bar-fill" />
           </div>
         </div>
 
-        {/* Everything below reveals after signal locks — pure CSS delay, no JS */}
-
-        {/* Caller info card */}
-        <div className="reveal-after-signal mb-6 mx-auto max-w-xs">
-          <div className="rounded-xl border border-zinc-700/50 bg-zinc-900/60 backdrop-blur-sm p-4">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-black font-bold text-sm">
+        {/* Caller card — reveals after signal */}
+        <div className="reveal-after mx-auto max-w-sm mb-8">
+          <div className="rounded-2xl border border-zinc-700/40 bg-zinc-900/70 backdrop-blur p-5 text-left">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-black font-bold text-lg shrink-0">
                 Z
               </div>
-              <div className="text-left">
-                <div className="text-zinc-200 text-sm font-bold">Zeph</div>
-                <div className="text-zinc-500 text-[10px]">Mars-born, 16 &bull; Never been to Earth</div>
+              <div className="min-w-0">
+                <div className="text-white text-base font-bold">Zeph</div>
+                <div className="text-zinc-500 text-xs">Mars-born &bull; Age 16 &bull; Never visited Earth</div>
               </div>
-              <div className="ml-auto flex items-center gap-1">
-                <div className="w-1 h-3 bg-green-400 rounded-full" />
-                <div className="w-1 h-4 bg-green-400 rounded-full" />
-                <div className="w-1 h-5 bg-green-400 rounded-full" />
-                <div className="w-1 h-3 bg-green-400 rounded-full" />
+              <div className="ml-auto flex items-end gap-0.5 shrink-0">
+                <div className="w-1 h-2 bg-green-400 rounded-sm" />
+                <div className="w-1 h-3 bg-green-400 rounded-sm" />
+                <div className="w-1 h-4 bg-green-400 rounded-sm" />
+                <div className="w-1 h-5 bg-green-400 rounded-sm" />
               </div>
             </div>
-            <div className="text-zinc-400 text-xs italic leading-relaxed">
+            <p className="text-zinc-400 text-sm italic leading-relaxed">
               &quot;Yo, is anyone on Earth picking up? This quantum relay thing is actually working!&quot;
-            </div>
+            </p>
           </div>
         </div>
 
         {/* Accept button */}
-        <div className="reveal-after-signal">
-          <button onClick={onAccept} className="relative group cursor-pointer">
-            <div className="absolute -inset-3 rounded-full border border-green-400/20 pulse-ring" />
-            <div className="absolute -inset-3 rounded-full border border-green-400/15 pulse-ring" style={{ animationDelay: "0.5s" }} />
-            <div
-              className="relative px-10 py-3.5 rounded-full border border-green-400/60 bg-green-400/10 hover:bg-green-400/20 transition-all duration-300"
-              style={{ boxShadow: "0 0 20px rgba(34,197,94,0.15)" }}
-            >
-              <div className="flex items-center gap-3">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="text-green-400">
-                  <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.2 2.2z" />
-                </svg>
-                <span className="text-green-400 text-sm tracking-[0.2em] uppercase font-bold" style={{ textShadow: "0 0 10px rgba(34,197,94,0.5)" }}>
-                  Accept Transmission
-                </span>
-              </div>
+        <div className="reveal-after">
+          <button
+            onClick={onAccept}
+            className="relative inline-flex items-center justify-center cursor-pointer group"
+          >
+            {/* Pulse rings — pointer-events: none so they don't block clicks */}
+            <div className="absolute -inset-4 rounded-full border border-green-400/20 pulse-ring pointer-events-none" />
+            <div className="absolute -inset-4 rounded-full border border-green-400/10 pulse-ring pointer-events-none" style={{ animationDelay: "0.7s" }} />
+
+            <div className="flex items-center gap-3 px-10 py-4 rounded-full border-2 border-green-400/50 bg-green-400/10 hover:bg-green-400/20 active:bg-green-400/30 transition-all duration-200"
+              style={{ boxShadow: "0 0 25px rgba(34,197,94,0.15), inset 0 0 25px rgba(34,197,94,0.05)" }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-green-400">
+                <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.2 2.2z" />
+              </svg>
+              <span className="text-green-400 text-base tracking-[0.15em] uppercase font-bold"
+                style={{ textShadow: "0 0 12px rgba(34,197,94,0.5)" }}>
+                Accept Transmission
+              </span>
             </div>
           </button>
-          <div className="mt-4 text-zinc-600 text-[10px] tracking-wider">
-            Microphone access required for two-way communication
-          </div>
+
+          <p className="mt-5 text-zinc-600 text-[10px] tracking-widest uppercase">
+            Microphone access required
+          </p>
         </div>
 
-        {/* Bottom info */}
-        <div className="mt-10 flex items-center justify-center gap-4 text-zinc-600 text-[9px] uppercase tracking-[0.3em]">
+        {/* Footer */}
+        <div className="reveal-after mt-12 flex items-center justify-center gap-5 text-zinc-700 text-[9px] uppercase tracking-[0.3em]">
           <span>Encrypted</span>
-          <span className="text-zinc-800">|</span>
+          <span className="text-zinc-800">&bull;</span>
           <span>Quantum Link</span>
-          <span className="text-zinc-800">|</span>
+          <span className="text-zinc-800">&bull;</span>
           <span>225M km</span>
         </div>
       </div>

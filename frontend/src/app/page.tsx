@@ -41,6 +41,14 @@ export default function Home() {
 
   return (
     <main className="relative h-screen w-screen overflow-hidden bg-[#06060a]">
+      {/* Background gradient for depth */}
+      <div
+        className="fixed inset-0 z-0"
+        style={{
+          background: "radial-gradient(ellipse at 30% 50%, rgba(193,68,14,0.08) 0%, transparent 60%), radial-gradient(ellipse at 70% 30%, rgba(30,40,80,0.12) 0%, transparent 50%)",
+        }}
+      />
+
       {/* 3D background - only if WebGL available */}
       {canRender3D && (
         <div className="fixed inset-0 z-0">
@@ -48,19 +56,19 @@ export default function Home() {
         </div>
       )}
 
-      {/* CSS stars fallback - always visible */}
+      {/* CSS stars - always visible */}
       <div className="fixed inset-0 z-0 overflow-hidden">
-        {Array.from({ length: 100 }).map((_, i) => (
+        {Array.from({ length: 120 }).map((_, i) => (
           <div
             key={i}
             className="absolute rounded-full bg-white"
             style={{
-              width: `${Math.random() > 0.9 ? 2 : 1}px`,
-              height: `${Math.random() > 0.9 ? 2 : 1}px`,
+              width: i % 12 === 0 ? 2 : 1,
+              height: i % 12 === 0 ? 2 : 1,
               top: `${(i * 7.3 + i * i * 0.13) % 100}%`,
               left: `${(i * 11.7 + i * i * 0.17) % 100}%`,
-              opacity: (i % 5 + 2) / 10,
-              animation: `blink ${3 + (i % 4)}s ease-in-out ${(i % 7) * 0.5}s infinite`,
+              opacity: (i % 5 + 1) / 8,
+              animation: `blink ${3 + (i % 5)}s ease-in-out ${(i % 7) * 0.4}s infinite`,
             }}
           />
         ))}
