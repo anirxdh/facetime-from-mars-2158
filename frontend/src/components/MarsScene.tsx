@@ -8,22 +8,28 @@ import * as THREE from "three";
 // Camera that smoothly transitions between Mars and Earth views
 function CameraController({ focus }: { focus: "mars" | "earth" | "idle" }) {
   const { camera } = useThree();
-  const targetPos = useRef(new THREE.Vector3(0, 0, 7));
+  const targetPos = useRef(new THREE.Vector3(1, 0.5, 7));
+  const lookAtPos = useRef(new THREE.Vector3(0, 0, 0));
+  const currentLookAt = useRef(new THREE.Vector3(0, 0, 0));
 
   useFrame((_, delta) => {
     if (focus === "earth") {
-      // Pan toward Earth (right side)
-      targetPos.current.set(4, 1, -2);
+      // Move camera close to Earth, looking at Earth
+      targetPos.current.set(5, 2, -2);
+      lookAtPos.current.set(5, 1.5, -6);
     } else if (focus === "mars") {
-      // Pan toward Mars (left side, closer)
-      targetPos.current.set(-3, 0, 4);
+      // Move camera close to Mars, looking at Mars
+      targetPos.current.set(-3, 0.5, 4);
+      lookAtPos.current.set(-2, 0, 0);
     } else {
-      // Default wide view showing both
+      // Wide view showing both planets
       targetPos.current.set(1, 0.5, 7);
+      lookAtPos.current.set(0, 0, 0);
     }
 
     camera.position.lerp(targetPos.current, delta * 1.5);
-    camera.lookAt(0, 0, 0);
+    currentLookAt.current.lerp(lookAtPos.current, delta * 1.5);
+    camera.lookAt(currentLookAt.current);
   });
 
   return null;
