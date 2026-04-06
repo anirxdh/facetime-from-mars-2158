@@ -1,19 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { LandingScreen } from "@/components/LandingScreen";
 import { TransmissionPanel } from "@/components/TransmissionPanel";
 
 const MarsScene = dynamic(() => import("@/components/MarsScene"), {
   ssr: false,
-  loading: () => (
-    <div className="fixed inset-0 bg-[#06060a] flex items-center justify-center">
-      <p className="text-amber-400 glow-amber text-sm tracking-widest uppercase">
-        Calibrating quantum relay...
-      </p>
-    </div>
-  ),
+  loading: () => null, // Don't block UI while 3D loads
 });
 
 type AppState = "landing" | "connecting" | "connected";
@@ -21,6 +15,13 @@ type AppState = "landing" | "connecting" | "connected";
 export default function Home() {
   const [appState, setAppState] = useState<AppState>("landing");
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [show3D, setShow3D] = useState(false);
+
+  // Delay 3D scene to let UI render first
+  useEffect(() => {
+    const timer = setTimeout(() => setShow3D(true), 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleAcceptTransmission = useCallback(() => {
     setAppState("connecting");
@@ -30,9 +31,31 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="relative h-screen w-screen overflow-hidden">
-      <MarsScene appState={appState} />
+    <main className="relative h-screen w-screen overflow-hidden bg-[#06060a]">
+      {/* 3D background - loads independently, never blocks UI */}
+      {show3D && (
+        <div className="fixed inset-0 z-0">
+          <MarsScene appState={appState} />
+        </div>
+      )}
 
+      {/* Stars fallback if 3D hasn't loaded */}
+      <div className="fixed inset-0 z-0 overflow-hidden">
+        {Array.from({ length: 80 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-px h-px bg-white rounded-full"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              opacity: Math.random() * 0.6 + 0.2,
+              animation: `blink ${2 + Math.random() * 4}s ease-in-out ${Math.random() * 3}s infinite`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* UI layer - always visible */}
       <div className="relative z-10 h-full w-full">
         {appState === "landing" && (
           <LandingScreen onAccept={handleAcceptTransmission} />
