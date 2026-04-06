@@ -42,8 +42,12 @@ export function TransmissionPanel({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Fetch intro on mount
+  // Fetch intro on mount (ref prevents double-call in React strict mode)
+  const introCalledRef = useRef(false);
   useEffect(() => {
+    if (introCalledRef.current) return;
+    introCalledRef.current = true;
+
     async function fetchIntro() {
       setIsProcessing(true);
       setSignalStatus("RECEIVING");

@@ -100,7 +100,7 @@ async def chat(req: ChatRequest):
 
     # Convert to speech with ElevenLabs
     xi_api_key = os.getenv("ELEVENLABS_API_KEY")
-    voice_id = os.getenv("ELEVENLABS_VOICE_ID", "pNInz6obpgDQGcFmaJgB")  # Default: Adam (young male)
+    voice_id = os.getenv("ELEVENLABS_VOICE_ID", "iP95p4xoKVk53GoZ742B")  # Default: Chris (young energetic male)
 
     async with httpx.AsyncClient() as http_client:
         tts_response = await http_client.post(
