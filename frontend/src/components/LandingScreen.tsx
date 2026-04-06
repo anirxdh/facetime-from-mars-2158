@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ZephAvatar, RikuAvatar, NovaAvatar } from "./CharacterAvatars";
 
 interface LandingScreenProps {
   onAccept: (character: string) => void;
@@ -136,39 +137,27 @@ export function LandingScreen({ onAccept }: LandingScreenProps) {
                   transform: active ? "scale(1)" : "scale(0.97)",
                 }}
               >
-                {/* Active indicator dot */}
-                {active && (
-                  <div
-                    className="absolute top-3 right-3 w-2 h-2 rounded-full"
-                    style={{ background: c.color, boxShadow: `0 0 8px ${c.color}` }}
-                  />
-                )}
-
-                {/* Avatar */}
-                <div
-                  className="w-11 h-11 rounded-lg flex items-center justify-center text-black font-bold text-sm mb-3"
-                  style={{
-                    background: `linear-gradient(135deg, ${c.color}, ${c.color}99)`,
-                    fontFamily: "var(--font-display)",
-                  }}
-                >
-                  {c.avatar}
+                {/* Portrait image */}
+                <div className="w-full aspect-square rounded-lg overflow-hidden mb-3">
+                  {c.id === "zeph" && <ZephAvatar />}
+                  {c.id === "chef_riku" && <RikuAvatar />}
+                  {c.id === "dr_nova" && <NovaAvatar />}
                 </div>
 
                 {/* Info */}
                 <div className="text-white text-sm font-bold mb-0.5" style={{ fontFamily: "var(--font-display)" }}>
                   {c.name}
                 </div>
-                <div className="text-[10px] mb-2" style={{ color: c.color + "90" }}>
+                <div className="text-[10px] mb-1" style={{ color: c.color + "90" }}>
                   {c.role} &middot; {c.age}
                 </div>
-                <div className="text-[var(--text-dim)] text-[10px] leading-relaxed">
+                <div className="text-[var(--text-dim)] text-[9px] leading-relaxed mb-2">
                   {c.detail}
                 </div>
 
                 {/* Quote */}
-                <div className="mt-3 pt-3 border-t" style={{ borderColor: active ? c.color + "15" : "rgba(255,255,255,0.03)" }}>
-                  <p className="text-[11px] italic" style={{ color: active ? c.color + "80" : "var(--text-dim)" }}>
+                <div className="pt-2 border-t" style={{ borderColor: active ? c.color + "20" : "rgba(255,255,255,0.04)" }}>
+                  <p className="text-[10px] italic" style={{ color: active ? c.color + "90" : "var(--text-dim)" }}>
                     &ldquo;{c.quote}&rdquo;
                   </p>
                 </div>
