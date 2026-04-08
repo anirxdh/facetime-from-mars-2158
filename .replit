@@ -45,6 +45,10 @@ waitForPort = 5000
 [workflows.workflow.metadata]
 outputType = "webview"
 
+[deployment]
+run = ["sh", "-c", "cd backend && python main.py & cd frontend && npm run dev"]
+deploymentTarget = "autoscale"
+
 [[ports]]
 localPort = 5000
 externalPort = 5000
