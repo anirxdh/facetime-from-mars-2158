@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from pydantic import BaseModel
 from dotenv import load_dotenv
-import anthropic
+from openai import OpenAI
 import httpx
 import os
 import uuid
@@ -246,17 +246,16 @@ async def chat(req: ChatRequest):
     # Keep last 20 messages for context
     history = sessions[s_key][-20:]
 
-    # Generate response with Claude
-    client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+    # Generate response with OpenAI
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-    response = client.messages.create(
-        model="claude-sonnet-4-20250514",
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
         max_tokens=120,
-        system=character["system_prompt"],
-        messages=history,
+        messages=[{"role": "system", "content": character["system_prompt"]}] + history,
     )
 
-    reply_text = response.content[0].text
+    reply_text = response.choices[0].message.content
     sessions[s_key].append({"role": "assistant", "content": reply_text})
 
     # Convert to speech with ElevenLabs

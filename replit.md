@@ -22,7 +22,7 @@ Two workflows handle the services:
 
 | Variable | Description |
 |---|---|
-| `ANTHROPIC_API_KEY` | API key for Claude AI (chat responses) |
+| `OPENAI_API_KEY` | API key for OpenAI (chat responses) |
 | `ELEVENLABS_API_KEY` | API key for ElevenLabs (text-to-speech) |
 | `ELEVENLABS_VOICE_ID` | (Optional) ElevenLabs voice ID, defaults to Adam |
 

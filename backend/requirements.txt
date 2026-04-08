@@ -1,6 +1,6 @@
 fastapi==0.135.3
 uvicorn==0.43.0
-anthropic
+openai
 elevenlabs
 python-dotenv
 httpx

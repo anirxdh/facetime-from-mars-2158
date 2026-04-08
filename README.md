@@ -12,7 +12,7 @@ You need **two API keys** to run this app:
 
 | Key | Where to get it |
 |-----|----------------|
-| `ANTHROPIC_API_KEY` | [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys) |
+| `OPENAI_API_KEY` | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) |
 | `ELEVENLABS_API_KEY` | [elevenlabs.io/app/settings/api-keys](https://elevenlabs.io/app/settings/api-keys) |
 
 **On Replit:** Go to Secrets tab (lock icon) → add both keys → restart.
@@ -72,12 +72,12 @@ User holds transmit button → Browser Speech-to-Text → text
 ## Setup
 
 ### Prerequisites
-- [Anthropic API key](https://console.anthropic.com/settings/keys)
+- [OpenAI API key](https://platform.openai.com/api-keys)
 - [ElevenLabs API key](https://elevenlabs.io/app/settings/api-keys)
 
 ### Run on Replit (recommended)
 1. Import this repo on [Replit](https://replit.com)
-2. Add Secrets: `ANTHROPIC_API_KEY`, `ELEVENLABS_API_KEY`
+2. Add Secrets: `OPENAI_API_KEY`, `ELEVENLABS_API_KEY`
 3. Click Run — both backend and frontend start automatically
 
 ### Run locally
