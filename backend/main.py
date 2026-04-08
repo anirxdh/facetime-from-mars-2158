@@ -216,7 +216,12 @@ class ChatRequest(BaseModel):
 
 @app.get("/api/health")
 async def health():
-    return {"status": "ok", "location": "Mars Colony One"}
+    return {
+        "status": "ok",
+        "location": "Mars Colony One",
+        "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
+        "elevenlabs_key_set": bool(os.getenv("ELEVENLABS_API_KEY")),
+    }
 
 
 @app.get("/api/characters")
