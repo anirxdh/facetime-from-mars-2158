@@ -46,7 +46,8 @@ waitForPort = 5000
 outputType = "webview"
 
 [deployment]
-run = ["sh", "-c", "cd backend && python main.py & cd frontend && npm run dev"]
+build = ["sh", "-c", "cd backend && pip install -r requirements.txt && cd ../frontend && npm install && npm run build"]
+run = ["sh", "-c", "cd backend && python main.py & cd frontend && npm run start"]
 deploymentTarget = "autoscale"
 
 [[ports]]
