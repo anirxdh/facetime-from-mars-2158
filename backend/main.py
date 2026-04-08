@@ -16,10 +16,10 @@ app = FastAPI(title="Signal From Mars")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5000"],
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type"],
+    allow_methods=["*"],
+    allow_headers=["*"],
     expose_headers=["X-Zeph-Text", "X-Session-Id"],
 )
 
