@@ -3,7 +3,7 @@ modules = ["nodejs-20", "python-3.12", "web", "bash"]
 expertMode = true
 
 [nix]
-channel = "stable-25_05"
+channel = "stable-24_05"
 
 [workflows]
 runButton = "Project"
