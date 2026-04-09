@@ -174,6 +174,11 @@ TTS_VOICE_SETTINGS = {
 # Helpers
 # ---------------------------------------------------------------------------
 
+def _safe_header(text: str) -> str:
+    """URL-encode text for use in HTTP headers (ASCII-safe)."""
+    return quote(text.replace("\n", " ").encode("utf-8"), safe="")
+
+
 def _session_key(character: str, session_id: str) -> str:
     """Namespace session storage by character to avoid cross-contamination."""
     return f"{character}:{session_id}"
@@ -280,7 +285,7 @@ async def chat(req: ChatRequest):
             content=tts_response.content,
             media_type="audio/mpeg",
             headers={
-                "X-Zeph-Text": quote(reply_text.replace("\n", " "), encoding="utf-8"),
+                "X-Zeph-Text": _safe_header(reply_text),
                 "X-Session-Id": session_id,
             },
         )
@@ -310,7 +315,7 @@ async def intro(character: str = Query(default="zeph")):
             content=tts_response.content,
             media_type="audio/mpeg",
             headers={
-                "X-Zeph-Text": quote(intro_text, encoding="utf-8"),
+                "X-Zeph-Text": _safe_header(intro_text),
                 "X-Session-Id": session_id,
             },
         )
