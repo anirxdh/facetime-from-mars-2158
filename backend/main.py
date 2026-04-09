@@ -11,7 +11,15 @@ import traceback
 from typing import Optional
 from urllib.parse import quote
 
+import sys
+import io
+
 load_dotenv()
+
+# Fix stdout encoding for Replit deployment (defaults to ASCII)
+if sys.stdout.encoding != "utf-8":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 app = FastAPI(title="Signal From Mars")
 
@@ -308,8 +316,9 @@ async def intro(character: str = Query(default="zeph")):
         tts_response = await _synthesize_speech(intro_text, char["voice_id"])
 
         if tts_response.status_code != 200:
-            print(f"INTRO TTS FAILED: status={tts_response.status_code} body={tts_response.text}")
-            return {"text": intro_text, "session_id": session_id, "audio": None, "tts_error": tts_response.text}
+            err_body = tts_response.text.encode("ascii", "replace").decode("ascii")
+            print(f"INTRO TTS FAILED: status={tts_response.status_code} body={err_body}")
+            return {"text": intro_text, "session_id": session_id, "audio": None, "tts_error": err_body}
 
         return Response(
             content=tts_response.content,
