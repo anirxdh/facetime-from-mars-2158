@@ -1,12 +1,13 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import Response
+from fastapi.responses import Response, JSONResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from openai import OpenAI
 import httpx
 import os
 import uuid
+import traceback
 from typing import Optional
 from urllib.parse import quote
 
@@ -216,11 +217,15 @@ class ChatRequest(BaseModel):
 
 @app.get("/api/health")
 async def health():
+    openai_key = os.getenv("OPENAI_API_KEY", "")
+    elevenlabs_key = os.getenv("ELEVENLABS_API_KEY", "")
     return {
         "status": "ok",
         "location": "Mars Colony One",
-        "openai_key_set": bool(os.getenv("OPENAI_API_KEY")),
-        "elevenlabs_key_set": bool(os.getenv("ELEVENLABS_API_KEY")),
+        "openai_key_set": bool(openai_key),
+        "openai_key_prefix": openai_key[:8] + "..." if openai_key else "MISSING",
+        "elevenlabs_key_set": bool(elevenlabs_key),
+        "elevenlabs_key_prefix": elevenlabs_key[:8] + "..." if elevenlabs_key else "MISSING",
     }
 
 
@@ -239,70 +244,79 @@ async def list_characters():
 
 @app.post("/api/chat")
 async def chat(req: ChatRequest):
-    character = _get_character(req.character)
-    session_id = req.session_id or str(uuid.uuid4())
-    s_key = _session_key(req.character, session_id)
+    try:
+        character = _get_character(req.character)
+        session_id = req.session_id or str(uuid.uuid4())
+        s_key = _session_key(req.character, session_id)
 
-    if s_key not in sessions:
-        sessions[s_key] = []
+        if s_key not in sessions:
+            sessions[s_key] = []
 
-    sessions[s_key].append({"role": "user", "content": req.text})
+        sessions[s_key].append({"role": "user", "content": req.text})
 
-    # Keep last 20 messages for context
-    history = sessions[s_key][-20:]
+        # Keep last 20 messages for context
+        history = sessions[s_key][-20:]
 
-    # Generate response with OpenAI
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        # Generate response with OpenAI
+        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        max_tokens=120,
-        messages=[{"role": "system", "content": character["system_prompt"]}] + history,
-    )
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            max_tokens=120,
+            messages=[{"role": "system", "content": character["system_prompt"]}] + history,
+        )
 
-    reply_text = response.choices[0].message.content
-    sessions[s_key].append({"role": "assistant", "content": reply_text})
+        reply_text = response.choices[0].message.content
+        sessions[s_key].append({"role": "assistant", "content": reply_text})
 
-    # Convert to speech with ElevenLabs
-    tts_response = await _synthesize_speech(reply_text, character["voice_id"])
+        # Convert to speech with ElevenLabs
+        tts_response = await _synthesize_speech(reply_text, character["voice_id"])
 
-    if tts_response.status_code != 200:
-        # Fallback: return text only
-        return {"text": reply_text, "session_id": session_id, "audio": None}
+        if tts_response.status_code != 200:
+            # Fallback: return text only
+            return {"text": reply_text, "session_id": session_id, "audio": None}
 
-    return Response(
-        content=tts_response.content,
-        media_type="audio/mpeg",
-        headers={
-            "X-Zeph-Text": quote(reply_text.replace("\n", " ")),
-            "X-Session-Id": session_id,
-        },
-    )
+        return Response(
+            content=tts_response.content,
+            media_type="audio/mpeg",
+            headers={
+                "X-Zeph-Text": quote(reply_text.replace("\n", " ")),
+                "X-Session-Id": session_id,
+            },
+        )
+    except Exception as e:
+        print(f"CHAT ERROR: {traceback.format_exc()}")
+        return JSONResponse(status_code=500, content={"error": str(e), "type": type(e).__name__})
 
 
 @app.get("/api/intro")
 async def intro(character: str = Query(default="zeph")):
-    char = _get_character(character)
-    session_id = str(uuid.uuid4())
-    s_key = _session_key(character, session_id)
+    try:
+        char = _get_character(character)
+        session_id = str(uuid.uuid4())
+        s_key = _session_key(character, session_id)
 
-    sessions[s_key] = []
-    intro_text = char["intro_text"]
-    sessions[s_key].append({"role": "assistant", "content": intro_text})
+        sessions[s_key] = []
+        intro_text = char["intro_text"]
+        sessions[s_key].append({"role": "assistant", "content": intro_text})
 
-    tts_response = await _synthesize_speech(intro_text, char["voice_id"])
+        tts_response = await _synthesize_speech(intro_text, char["voice_id"])
 
-    if tts_response.status_code != 200:
-        return {"text": intro_text, "session_id": session_id, "audio": None}
+        if tts_response.status_code != 200:
+            print(f"INTRO TTS FAILED: status={tts_response.status_code} body={tts_response.text}")
+            return {"text": intro_text, "session_id": session_id, "audio": None, "tts_error": tts_response.text}
 
-    return Response(
-        content=tts_response.content,
-        media_type="audio/mpeg",
-        headers={
-            "X-Zeph-Text": quote(intro_text),
-            "X-Session-Id": session_id,
-        },
-    )
+        return Response(
+            content=tts_response.content,
+            media_type="audio/mpeg",
+            headers={
+                "X-Zeph-Text": quote(intro_text),
+                "X-Session-Id": session_id,
+            },
+        )
+    except Exception as e:
+        print(f"INTRO ERROR: {traceback.format_exc()}")
+        return JSONResponse(status_code=500, content={"error": str(e), "type": type(e).__name__})
 
 
 if __name__ == "__main__":
