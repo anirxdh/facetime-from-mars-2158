@@ -280,7 +280,7 @@ async def chat(req: ChatRequest):
             content=tts_response.content,
             media_type="audio/mpeg",
             headers={
-                "X-Zeph-Text": quote(reply_text.replace("\n", " ")),
+                "X-Zeph-Text": quote(reply_text.replace("\n", " "), encoding="utf-8"),
                 "X-Session-Id": session_id,
             },
         )
@@ -310,7 +310,7 @@ async def intro(character: str = Query(default="zeph")):
             content=tts_response.content,
             media_type="audio/mpeg",
             headers={
-                "X-Zeph-Text": quote(intro_text),
+                "X-Zeph-Text": quote(intro_text, encoding="utf-8"),
                 "X-Session-Id": session_id,
             },
         )
