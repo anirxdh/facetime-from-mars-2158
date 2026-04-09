@@ -47,7 +47,7 @@ outputType = "webview"
 
 [deployment]
 build = ["sh", "-c", "pip install -r backend/requirements.txt && cd frontend && npm install && npm run build"]
-run = ["sh", "-c", "python backend/main.py & cd frontend && npm run start"]
+run = ["sh", "-c", "bash start.sh"]
 deploymentTarget = "autoscale"
 
 [[ports]]
